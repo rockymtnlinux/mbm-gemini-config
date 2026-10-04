@@ -13,7 +13,7 @@ Always strive for:
 
 - **Command Shell**: PowerShell script execution is restricted on the system. ALWAYS use **Git Bash** (e.g. `bash.exe -c "..."`) for all terminal commands. Avoid native PowerShell dependencies and wrappers like `cmd /c`.
 - **Executable Names**: Always use full executable names with extensions (`python.exe`, `git.exe`, `gh.exe`, `uv.exe`, `npx.exe`, `tofu.exe`, `terraform.exe`) to ensure reliable binary resolution in the hybrid WSL/Windows environment.
-- **Discrete Commands**: Prefer executing individual, discrete commands over chained commands (e.g., avoid chaining with `&&` or `;`) to ensure clear auditing and straightforward approvals.
+- **Discrete Commands**: Prefer executing individual, discrete commands over chained commands (avoid `&&` or `;` to facilitate granular auditing and approvals).
 - **Large Text Payloads**: When adding large blocks of text (plans, walkthroughs, reviews, PR descriptions) to GitHub issues or pull requests, write the content to a temporary file in your scratch directory and upload via `gh.exe` using `--body-file` / `-F` to prevent character mangling and shell escaping issues.
 - **Infrastructure / Cloud Commands**:
   - **Cloud Build**: When running `gcloud builds submit`, ALWAYS run it from the **repository root** and explicitly specify `--ignore-file` (e.g., `--ignore-file=path/to/.gcloudignore`).
@@ -44,10 +44,10 @@ When working on a development task, strictly follow this sequence:
 2. **Synchronize Baseline**: Run `git.exe checkout main` and `git.exe pull` to ensure you start from a clean baseline.
 3. **Branch Creation**: Create and checkout a branch linked to the issue using `gh.exe issue develop <issue-number>`.
 4. **Plan & Approve**: State assumptions, acceptance criteria, and test plan. Seek user approval, then record the plan in the issue body.
-5. **Execution & Atomic Commits**: Implement changes and commit in logical, atomic chunks. Fix any automated scan or test failures. If blocked after multiple iterations, request user guidance.
+5. **Execution & Atomic Commits**: Implement changes and commit in logical, atomic chunks. Fix any automated scan or test failures (ask for user guidance if blocked after multiple iterations).
 6. **Verify & Clean State**: Check `git.exe status` for untracked files. Remove temporary debug files. Update documentation (`README.md`, `docs/`).
 7. **PR Context & Walkthrough**: Produce a structured summary or `walkthrough.md` detailing changed files, tests executed, and results.
-8. **Create Pull Request**: When verified and approved by the user, invoke the `create_pr` skill to format the PR body using the standard template and submit via `gh.exe pr create --title "<title>" --body-file "<file>"`.
+8. **Create Pull Request**: When verified and approved by the user, invoke the `create_pr` skill to generate the standard PR body file in your scratch directory and create the pull request via `gh.exe pr create --title "<title>" --body-file "<file>"`.
 9. **Dual Reviewer MCP Review**: Run the dual reviewer MCP tools to review the PR. Display the review to the console and post it as a PR comment. Request approval for any suggested fixes.
 10. **Merge & Cleanup**: Only merge once explicit approval is granted. After merging, delete the feature branch locally and remotely, checkout `main`, and run `git.exe pull`.
 
@@ -67,5 +67,6 @@ When working on a development task, strictly follow this sequence:
 
 - **File Modifications**: Check if a target file already exists before creating a new one; modify existing files in place.
 - **Linting & Quality**: Ensure code complies with repository linters and formatters.
+- **Technical Constraints**: If a task cannot be completed due to technical constraints, explicitly explain the blockers, propose workarounds, or request clarification.
 - **YAML Formatting**: Avoid redundant quotes in YAML strings; only quote strings when required (special characters, numbers, booleans).
 - **Documentation Integrity**: Maintain existing comments and docstrings unless explicitly directed otherwise.
